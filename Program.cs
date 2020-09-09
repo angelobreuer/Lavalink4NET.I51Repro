@@ -41,7 +41,7 @@
             var track1 = await audioService.GetTrackAsync(Track1);
             var player = await audioService.JoinAsync<QueuedLavalinkPlayer>(GuildId, VoiceChannelId);
 
-            await Task.Delay(2000);
+            await Task.Delay(3000);
 
             // Play a track by adding it to the queue using player.Queue.Add(track) and calling
             // PlayTopAsync(track), where track has been dequeued.
@@ -55,7 +55,7 @@
             Debug.Assert(player.State is PlayerState.Playing);
             Debug.Assert(player.CurrentTrack is not null);
 
-            await Task.Delay(8000);
+            await Task.Delay(6000);
 
             Debug.Assert(player.State is PlayerState.Playing);
             Debug.Assert(player.CurrentTrack is not null);
@@ -97,6 +97,13 @@
             Debug.Assert(player is not null);
             Debug.Assert(player.State is PlayerState.Playing); // ! Assertion should fail here according to the issue
             Debug.Assert(player.CurrentTrack is not null);
+
+            // skip actual track
+            player.Queue.Clear();
+            await player.SkipAsync();
+
+            Debug.Assert(player.State is PlayerState.NotPlaying); // ! Assertion should fail here according to the second part of the issue
+            Debug.Assert(player.CurrentTrack is null);
         }
     }
 }
